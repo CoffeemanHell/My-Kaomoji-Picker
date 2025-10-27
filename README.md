@@ -1,4 +1,5 @@
 # ╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ My Kaomoji Picker
+<img width="477" height="448" alt="resim" src="https://github.com/user-attachments/assets/cffb862b-d69e-4be0-818a-fb6eb1d491f6" />
 
 ### System
 - **Python 3.13+**
