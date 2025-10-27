@@ -22,8 +22,12 @@ sudo dnf install python3-pyqt6 wl-clipboard libnotify
 The project structure should be:
 ```
 ~/kaomoji-picker/
-├── kaomoji-picker.py
+├── locales/
+│   ├── en.json
+│   └── tr.json
 ├── config.py
+├── i18n.py
+├── kaomoji-picker.py
 └── kaomojis.json
 ```
 
