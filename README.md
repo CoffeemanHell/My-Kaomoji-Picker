@@ -1,4 +1,4 @@
-╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ My Kaomoji Picker
+# ╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ My Kaomoji Picker
 
 ### System
 - **Python 3.13+**
