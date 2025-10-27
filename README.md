@@ -27,12 +27,6 @@ The project structure should be:
 └── kaomojis.json
 ```
 
-### 3. Make Executable (Optional)
-
-```bash
-chmod +x ~/kaomoji-picker/kaomoji-picker.py
-```
-
 ### Running the Application
 
 ```bash
