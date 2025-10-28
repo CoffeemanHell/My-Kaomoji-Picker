@@ -1,7 +1,7 @@
 {
   "window_title": "Kaomoji",
-  "recents": "Recents",
-  "clear_recents_tooltip": "Clear recents",
+  "recents": "Recently Used",
+  "clear_recents_tooltip": "Clear recently used",
   "notification_title": "Kaomoji Copied",
 
   "cat_Positive": "Positive",
