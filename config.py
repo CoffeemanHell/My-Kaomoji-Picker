@@ -7,7 +7,7 @@ class Config:
     # Available: "en" (English), "tr" (Turkish)
     # To add a new language, create a new JSON file in locales/ directory
     # Example: locales/de.json for German
-    language: str = "tr"
+    language: str = "en"
 
     # Recents
     max_recents: int = 15
