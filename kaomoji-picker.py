@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import subprocess
 import logging
@@ -15,8 +16,8 @@ from PyQt6.QtWidgets import (
     QScrollArea,
     QPushButton,
 )
-from PyQt6.QtCore import Qt, QSettings, pyqtSignal
-from PyQt6.QtGui import QPalette, QColor
+from PyQt6.QtCore import Qt, QSettings, pyqtSignal, QObject, QEvent
+from PyQt6.QtGui import QPalette, QColor, QCloseEvent, QKeyEvent, QMouseEvent
 
 from config import Config
 from i18n import init_i18n, t
@@ -413,19 +414,18 @@ class KaomojiPicker(QWidget):
         self.clear_btn.hide()
 
     @override
-    def closeEvent(self, a0) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         self.save_pos()
-        a0.accept()
-        a0.accept()
+        event.accept()
 
     @override
-    def keyPressEvent(self, a0) -> None:
-        if a0.key() == Qt.Key.Key_Escape:
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Escape:
             self.save_pos()
             QApplication.quit()
         elif (
-            a0.key() == Qt.Key.Key_Tab
-            and a0.modifiers() & Qt.KeyboardModifier.ControlModifier
+            event.key() == Qt.Key.Key_Tab
+            and event.modifiers() & Qt.KeyboardModifier.ControlModifier
         ):
             if not self.categories:
                 return
@@ -435,7 +435,7 @@ class KaomojiPicker(QWidget):
             except (ValueError, AttributeError):
                 current_index = 0
 
-            if a0.modifiers() & Qt.KeyboardModifier.ShiftModifier:
+            if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
                 next_index = (current_index - 1) % len(self.categories)
             else:
                 next_index = (current_index + 1) % len(self.categories)
@@ -445,16 +445,15 @@ class KaomojiPicker(QWidget):
             self.on_category_click(new_category)
 
     @override
-    def eventFilter(self, a0, a1) -> bool:
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (
             config.close_on_focus_loss
-            and a1.type() == a1.Type.WindowDeactivate
+            and event.type() == event.Type.WindowDeactivate
             and not self.resizing
         ):
             self.save_pos()
             QApplication.quit()
-        return super().eventFilter(a0, a1)
-        return super().eventFilter(a0, a1)
+        return super().eventFilter(obj, event)
 
     def save_pos(self) -> None:
         self.settings.setValue("pos", self.pos())
@@ -467,19 +466,19 @@ class KaomojiPicker(QWidget):
             self.resize(self.settings.value("size"))
 
     @override
-    def mousePressEvent(self, a0) -> None:
-        if a0.button() == Qt.MouseButton.LeftButton:
-            edge = self.get_resize_edge(a0.pos())
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            edge = self.get_resize_edge(event.pos())
             if edge:
                 self.resizing = True
                 self.resize_edge = edge
-                self.start_pos = a0.globalPosition().toPoint()
+                self.start_pos = event.globalPosition().toPoint()
                 self.start_geo = self.geometry()
 
     @override
-    def mouseMoveEvent(self, a0) -> None:
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if self.resizing and self.start_pos is not None and self.start_geo:
-            delta = a0.globalPosition().toPoint() - self.start_pos
+            delta = event.globalPosition().toPoint() - self.start_pos
             g = self.start_geo
 
             new_width = max(self.minimumWidth(), g.width() + delta.x())
@@ -487,12 +486,12 @@ class KaomojiPicker(QWidget):
 
             self.setGeometry(g.x(), g.y(), new_width, new_height)
         else:
-            cursor = self.get_resize_edge(a0.pos())
+            cursor = self.get_resize_edge(event.pos())
             self.setCursor(cursor if cursor else Qt.CursorShape.ArrowCursor)
 
     @override
-    def mouseReleaseEvent(self, a0) -> None:
-        if a0.button() == Qt.MouseButton.LeftButton and self.resizing:
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.MouseButton.LeftButton and self.resizing:
             self.resizing = False
             self.resize_edge = None
             self.save_pos()
