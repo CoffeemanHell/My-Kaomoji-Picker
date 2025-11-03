@@ -9,7 +9,7 @@
 - `wl-clipboard` - Wayland clipboard utilities (provides `wl-copy`)
 - `libnotify` - Desktop notifications (provides `notify-send`)
 
-## 🚀 Installation
+## (ﾉ･ｪ･)ﾉ Installation
 
 ### 1. Install System Dependencies
 
@@ -45,7 +45,7 @@ python ~/kaomoji-picker/kaomoji-picker.py
 - Command: `python3 ~/kaomoji-picker/kaomoji-picker.py`
 - Trigger: `Meta+K` (or your preference)
 
-## 📚 Kaomoji Categories
+## ( . .)φ Kaomoji Categories
 
 The default `kaomojis.json` includes various categories. You can add your own by editing the JSON file:
 
@@ -61,13 +61,13 @@ The default `kaomojis.json` includes various categories. You can add your own by
 }
 ```
 
-## 🤝 Contributing
+## ( . .)φ Contributing
 
 Feel free to:
 - Add more kaomojis to `kaomojis.json`
 - Fork and customize for your needs
 
-## 📄 License & Attribution
+## ( . .)φ License & Attribution
 
 ### Kaomoji Data
 
