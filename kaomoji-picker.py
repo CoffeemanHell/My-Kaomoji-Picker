@@ -4,9 +4,10 @@ import logging
 import subprocess
 import sys
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
 from textwrap import dedent
-from typing import List, override
+from typing import TypeAlias, override
 
 from PyQt6.QtCore import QEvent, QObject, QSettings, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QColor, QKeyEvent, QMouseEvent, QPalette
@@ -29,24 +30,31 @@ from i18n import init_i18n, t
 @dataclass
 class EmoticonCategory:
     name: str
-    emoticons: List[str]
+    emoticons: list[str]
 
 
 @dataclass
 class DataGroup:
     name: str
-    categories: List[EmoticonCategory]
+    categories: list[EmoticonCategory]
 
+
+class Constants(StrEnum):
+    RECENTS_KEY = "__recents__"
+
+
+# Type alias'lar okunabilirliği artırır
+KaomojiData: TypeAlias = list[DataGroup]
+RecentsDict: TypeAlias = dict[str, int]
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 config = Config()
 init_i18n(config.language)
 
-RECENTS_KEY = "__recents__"
-
 
 def hex_color(qcolor: QColor | None) -> str:
+    """QColor nesnesini hex renk koduna dönüştürür."""
     return qcolor.name() if qcolor else "#000000"
 
 
@@ -73,9 +81,7 @@ class CategoryBar(QScrollArea):
         self.active_category: str | None = None
 
     def _setup_styles(self) -> None:
-        palette = (
-            QApplication.instance().palette() if QApplication.instance() else QPalette()
-        )
+        palette = QApplication.instance().palette()
         bg = hex_color(palette.color(QPalette.ColorRole.Window))
         button_text = hex_color(palette.color(QPalette.ColorRole.ButtonText))
         hover_text = hex_color(palette.color(QPalette.ColorRole.HighlightedText))
@@ -106,9 +112,9 @@ class CategoryBar(QScrollArea):
 
     def update_categories(self, categories: list[str]) -> None:
         btn = QPushButton(t("recents"))
-        btn.clicked.connect(lambda: self.set_active_category(RECENTS_KEY))
+        btn.clicked.connect(lambda: self.set_active_category(Constants.RECENTS_KEY))
         self.layout.addWidget(btn)
-        self.buttons[RECENTS_KEY] = btn
+        self.buttons[Constants.RECENTS_KEY] = btn
 
         for cat in categories:
             btn = QPushButton(t(f"cat_{cat}", cat))
@@ -117,7 +123,7 @@ class CategoryBar(QScrollArea):
             self.buttons[cat] = btn
 
         if self.buttons:
-            self.set_active_category(RECENTS_KEY)
+            self.set_active_category(Constants.RECENTS_KEY)
 
     def set_active_category(self, category: str) -> None:
         if self.active_category and (btn := self.buttons.get(self.active_category)):
@@ -137,9 +143,9 @@ class KaomojiPicker(QWidget):
         super().__init__()
         self.settings = QSettings("KaomojiPicker", "AppSettings")
         self.json_file = Path(__file__).parent / "kaomojis.json"
-        self._data: list[DataGroup] = self._load_all_data()
+        self._data: KaomojiData = self._load_all_data()
         self.categories: list[str] = self._get_category_names()
-        self.recents_dict: dict[str, int] = self._load_recents()
+        self.recents_dict: RecentsDict = self._load_recents()
         self.current_category: str | None = None
         self.resizing = False
         self.start_pos = None
@@ -147,7 +153,7 @@ class KaomojiPicker(QWidget):
         self.init_ui()
         self.restore_pos()
 
-    def _load_all_data(self) -> list[DataGroup]:
+    def _load_all_data(self) -> KaomojiData:
         if not self.json_file.exists():
             self._create_default()
         try:
@@ -164,7 +170,7 @@ class KaomojiPicker(QWidget):
             logger.error(f"Could not load or parse JSON file: {e}")
             return []
 
-    def _load_recents(self) -> dict[str, int]:
+    def _load_recents(self) -> RecentsDict:
         recents = self.settings.value("recents", {}, dict)
         if not isinstance(recents, dict):
             recents = {}
@@ -196,9 +202,7 @@ class KaomojiPicker(QWidget):
             Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        palette = (
-            QApplication.instance().palette() if QApplication.instance() else QPalette()
-        )
+        palette = QApplication.instance().palette()
         window_bg = hex_color(palette.color(QPalette.ColorRole.Window))
         frame_border = hex_color(palette.color(QPalette.ColorRole.Mid))
         container = QFrame(self)
@@ -292,7 +296,7 @@ class KaomojiPicker(QWidget):
         self.current_category = category
         self.list_widget.clear()
         match category:
-            case "__recents__":
+            case Constants.RECENTS_KEY:
                 sorted_items = sorted(
                     self.recents_dict.items(), key=lambda x: x[1], reverse=True
                 )[: config.max_recents]
