@@ -45,22 +45,6 @@ python ~/kaomoji-picker/kaomoji-picker.py
 - Command: `python3 ~/kaomoji-picker/kaomoji-picker.py`
 - Trigger: `Meta+K` (or your preference)
 
-## ( . .)φ Kaomoji Categories
-
-The default `kaomojis.json` includes various categories. You can add your own by editing the JSON file:
-
-```json
-{
-  "name": "My Category",
-  "categories": [
-    {
-      "name": "Subcategory",
-      "emoticons": ["(づ｡◕‿‿◕｡)づ", "ヾ(⌐■_■)ノ♪"]
-    }
-  ]
-}
-```
-
 ## ( . .)φ Contributing
 
 Feel free to:
