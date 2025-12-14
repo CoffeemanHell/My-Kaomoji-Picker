@@ -45,12 +45,6 @@ python ~/kaomoji-picker/kaomoji-picker.py
 - Command: `python3 ~/kaomoji-picker/kaomoji-picker.py`
 - Trigger: `Meta+K` (or your preference)
 
-## ( . .)φ Contributing
-
-Feel free to:
-- Add more kaomojis to `kaomojis.json`
-- Fork and customize for your needs
-
 ## ( . .)φ License & Attribution
 
 ### Kaomoji Data
